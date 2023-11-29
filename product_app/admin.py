@@ -6,6 +6,7 @@ from product_app.models import Product, Category
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'price_one', 'category')
+    list_filter = ('category',)
 
 
 @admin.register(Category)
