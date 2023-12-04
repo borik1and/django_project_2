@@ -1,0 +1,28 @@
+{% extends 'product_app/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<h1>Наши товары <span class="badge bg-secondary"></span></h1>
+
+<div class="row">
+    {% for object in object_list %}
+            <div class="card" style="width: 25rem;">
+                <img class="card-img-top"
+                    src="{{object.photo | mymedia}}"
+                        alt="Card image cap">
+                             <div class="card-body">
+                                <h5 class="card-title">{{ object.name|title }}</h5>
+                              <p class="card-text">{{ object.description }}</p>
+                             <p class="date_add"> Дата добавления: {{ object.date_add }}</p>
+                         <p class="modified_date">Дата изменения: {{ object.modified_date }}</p>
+                     <a href="#" class="btn btn-primary">Категория: {{ object.category }}</a>
+                 </div>
+              </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block title %}
+    Product
+{% endblock %}
