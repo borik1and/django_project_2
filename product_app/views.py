@@ -3,14 +3,16 @@ from django.views.generic import ListView, DetailView, CreateView
 from product_app.models import Product
 
 
+class IndexListView(ListView):
+    model = Product
+    template_name = 'product_app/index.html'
 
-
-def index(request):
-    context = {
-        'object_list': Product.objects.all(),
-        'title': 'Главная'
-    }
-    return render(request, 'product_app/index.html', context)
+# def index(request):
+#     context = {
+#         'object_list': Product.objects.all(),
+#         'title': 'Главная'
+#     }
+#     return render(request, 'product_app/index.html', context)
 
 
 class CatalogListView(ListView):
