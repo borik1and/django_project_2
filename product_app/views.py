@@ -1,6 +1,8 @@
 from django.shortcuts import render
-
+from django.views.generic import ListView, DetailView, CreateView
 from product_app.models import Product
+
+
 
 
 def index(request):
@@ -11,12 +13,9 @@ def index(request):
     return render(request, 'product_app/index.html', context)
 
 
-def catalog(request):
-    context = {
-        'object_list': Product.objects.all(),
-        'title': 'Главная'
-    }
-    return render(request, 'product_app/catalog.html', context)
+class CatalogListView(ListView):
+    model = Product
+    template_name = 'product_app/catalog_list.html'
 
 
 def about(request):
