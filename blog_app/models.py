@@ -6,7 +6,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 class Blog_app(models.Model):
     title = models.CharField(max_length=150, verbose_name='Заголовок')
-    slug = models.CharField(max_length=500, **NULLABLE, verbose_name='URL')
+    slug = models.CharField(max_length=500, **NULLABLE, verbose_name='slug')
     body = models.TextField(verbose_name='Содержимое')
     preview = models.ImageField(upload_to='blog_app/', **NULLABLE, verbose_name='Превью')
     creation_date = models.DateField(default=date.today, verbose_name='дата создания')

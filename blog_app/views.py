@@ -6,13 +6,18 @@ from blog_app.models import Blog_app
 
 class Blog_appCreateView(CreateView):
     model = Blog_app
-    fields = ('title', 'body', 'creation_date', 'publication')
+    fields = ('title', 'body', 'creation_date', 'publication', 'preview')
     # template_name = 'blog_app/blog_app_form.html'
     success_url = reverse_lazy('blog_app:list')
 
 
 class Blog_appListView(ListView):
     model = Blog_app
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(publication=True)
+        return queryset
 
 
 class Blog_appDetailView(DetailView):
