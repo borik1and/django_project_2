@@ -3,7 +3,7 @@ from product_app.views import CatalogListView, IndexListView, AboutView
 from product_app import views
 # from product_app.apps import ProductAppConfig
 
-# app_name = ProductAppConfig.name
+app_name = 'product_app'
 
 urlpatterns = [
     path('', IndexListView.as_view(), name='index'),

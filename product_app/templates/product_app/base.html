@@ -17,14 +17,19 @@
                              <div class="collapse navbar-collapse" id="navbarNav">
                              <ul class="navbar-nav">
                            <li class="nav-item">
-                         <a class="nav-link active" aria-current="page" href="index">Главная</a>
+                         <a class="nav-link active" aria-current="page" href="{% url 'product_app:index' %}">Главная</a>
                        </li>
                     <li class="nav-item">
-                 <a class="nav-link active" href="catalog">Каталог</a>
+                 <a class="nav-link active" href="{% url 'product_app:catalog' %}">Каталог</a>
               </li>
             <li class="nav-item">
-          <a class="nav-link active" href="about" aria-disabled="true">О Нас</a>
+          <a class="nav-link active" href="{% url 'product_app:about' %}" aria-disabled="true">О Нас</a>
         </li>
+             <li class="nav-item">
+         <a class="nav-link active" href="{% url 'blog_app:list' %}">Блоги</a>
+      </li>
+
+
       </ul>
     </div>
 </div>
