@@ -11,7 +11,7 @@ class Blog_app(models.Model):
     preview = models.ImageField(upload_to='blog_app/', **NULLABLE, verbose_name='Превью')
     creation_date = models.DateField(default=date.today, verbose_name='дата создания')
     publication = models.BooleanField(default=True, verbose_name='признак публикации')
-    view_num = models.IntegerField(verbose_name='количество просмотров', **NULLABLE)
+    view_num = models.IntegerField(verbose_name='количество просмотров', default=0)
 
     def __str__(self):
         return f'{self.title}{self.body}{self.creation_date}{self.publication}'

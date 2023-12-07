@@ -23,6 +23,12 @@ class Blog_appListView(ListView):
 class Blog_appDetailView(DetailView):
     model = Blog_app
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.view_num += 1
+        obj.save()
+        return obj
+
 
 class Blog_appUpdateView(UpdateView):
     model = Blog_app
