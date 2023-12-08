@@ -1,7 +1,5 @@
 from django.urls import path
 from product_app.views import CatalogListView, IndexListView, AboutView
-from product_app import views
-# from product_app.apps import ProductAppConfig
 
 app_name = 'product_app'
 
