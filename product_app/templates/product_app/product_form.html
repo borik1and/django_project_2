@@ -1,0 +1,43 @@
+{% extends 'product_app/base.html' %}
+
+{% block content %}
+
+<div class="row col-12">
+    <form class="row" method="post" enctype="multipart/form-data">
+                        <div class="col-md-6">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        Добавление продукта
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2 class="card-title">
+                                            Версия продукта
+                                        </h2>
+                                    </div>
+                                    <div class="card-body">
+                                        {{ formset.management_form }}
+                                        {% for form in formset.forms %}
+                                            {{ form.as_p }}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="card-footer"></div>
+                                </div>
+                        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.datetime_safe import date
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -21,8 +22,8 @@ class Product(models.Model):
     photo = models.ImageField(upload_to='product_app/', **NULLABLE, verbose_name='Фото')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     price_one = models.IntegerField(verbose_name='цена за штуку')
-    date_add = models.DateField(verbose_name='дата создания')
-    modified_date = models.DateField(verbose_name='дата последнего изменения')
+    date_add = models.DateField(default=date.today, verbose_name='дата создания')
+    modified_date = models.DateField(default=date.today, verbose_name='дата последнего изменения')
 
     def __str__(self):
         return f'{self.name}({self.category})'
@@ -30,3 +31,18 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+
+
+class Version(models.Model):
+    version_name = models.CharField(max_length=150, verbose_name='Название версии')
+    version_num = models.IntegerField(verbose_name='Номер версии')
+    version_flag = models.BooleanField(default=True, verbose_name='Признак текущей версии')
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+
+    def __str__(self):
+        return f'{self.version_name}'
+
+    class Meta:
+        verbose_name = 'Версия'
+        verbose_name_plural = 'Версии'
