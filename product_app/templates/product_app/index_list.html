@@ -32,7 +32,7 @@
 
                         {% for version in object.versions.all %}
                             {% if version.version_flag %}
-                                <h3>Version</h3>
+
                                 <p>Версия: {{ version.version_name }}</p>
                                 <p>Номер версии: {{ version.version_num }}</p>
                             {% endif %}
