@@ -4,50 +4,54 @@
     <div class="col-12 mb-5">
         <a class="btn btn-outline-primary" href="{% url 'product_app:create_product' %} ">Добавить продукт</a>
     </div>
-<div class="col-12 mb-5">
-    <h1>Наши товары <span class="badge bg-secondary"></span></h1>
-</div>
+    <div class="col-12 mb-5">
+        <h1>Наши товары <span class="badge bg-secondary"></span></h1>
+    </div>
 
-
-
-<div class="row">
-    {% for object in object_list %}
+    <div class="row">
+        {% for object in object_list %}
             <div class="col-md-4">
                 <div class="card mb-4 box-shadow">
-                    <div class="card-body>">
-                        <img src="{{object.photo | mymedia}}"
-                     class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <img src="{{object.photo | mymedia}}" class="card-img-top" alt="...">
                         <style>
                             .card-img-top {
-                                height: 500px; /* Задайте желаемую высоту */
-                                object-fit: cover; /* Это позволит изображению сохранять пропорции и обрезать, чтобы вписаться в рамки */
+                                height: 500px;
+                                object-fit: cover;
                             }
                         </style>
                         <p class="card-text">
-                           <h3>{{ object.name }}</h3>
+                            <h3>{{ object.name }}</h3>
                         </p>
-                            <p class="card-text">
-                                {{ object.description | truncatechars:100 }}
-                            </p>
-                                <p class="card-text">
-                                    Категория: {{ object.category }}
-                                </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            <a href=""
-                                               class="btn btn-sm btn-outline-secondary">View</a>
-                                            <a href="{% url 'product_app:update_product' object.pk %}"
-                                               class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <p class="card-text">
+                            {{ object.description | truncatechars:100 }}
+                        </p>
+                        <p class="card-text">
+                            Категория: {{ object.category }}
+                        </p>
 
-                                        </div>
+                        {% for version in object.versions.all %}
+                            {% if version.version_flag %}
+                                <h3>Version</h3>
+                                <p>Версия: {{ version.version_name }}</p>
+                                <p>Номер версии: {{ version.version_num }}</p>
+                            {% endif %}
+                        {% endfor %}
+
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="" class="btn btn-sm btn-outline-secondary">View</a>
+                                <a href="{% url 'product_app:update_product' object.pk %}"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-    {% endfor %}
-</div>
-
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block title %}

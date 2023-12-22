@@ -1,7 +1,7 @@
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView
 
 from product_app.forms import ProductForm, VersionForm
 from product_app.models import Product, Version
@@ -10,6 +10,7 @@ from django.views import View
 
 class IndexListView(ListView):
     model = Product
+    model1 = Version
     template_name = 'product_app/index_list.html'
 
 
@@ -41,6 +42,16 @@ class Product_appCreateView(CreateView):
     template_name = 'product_app/product_form.html'
     success_url = reverse_lazy('product_app:index')
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        SubjectFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = SubjectFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = SubjectFormset(instance=self.object)
+
+        return context_data
+
 
 class Product_appUpdateView(UpdateView):
     model = Product
@@ -55,6 +66,8 @@ class Product_appUpdateView(UpdateView):
             context_data['formset'] = SubjectFormset(self.request.POST, instance=self.object)
         else:
             context_data['formset'] = SubjectFormset(instance=self.object)
+            # информацию об активной версии в контекст
+            context_data['active_version'] = self.object.versions.filter(version_flag=True).first()
         return context_data
 
     def form_valid(self, form):

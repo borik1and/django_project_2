@@ -3,18 +3,23 @@ from django import forms
 from product_app.models import Product, Version
 
 
-class ProductForm(forms.ModelForm):
+class StyleFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name != 'version_flag':
+                field.widget.attrs['class'] = 'form-control'
+
+
+class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
         # field = ('name', 'description', )
         # exclude = ('modified_date',)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field_name != 'version_flag':
-                field.widget.attrs['class'] = 'form-control'
+    def get_active_version(self):
+        return self.instance.version_set.filter(version_flag=True).first()
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -35,13 +40,7 @@ class ProductForm(forms.ModelForm):
         return description
 
 
-class VersionForm(forms.ModelForm):
+class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field_name != 'version_flag':
-                field.widget.attrs['class'] = 'form-control'
