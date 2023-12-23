@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os.path
 from pathlib import Path
 from config.temp import user_name, pass_name, secret_key_name
+from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,8 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret_key_name
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,17 +77,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+ENVPATH = BASE_DIR / '.env'
+print(ENVPATH)
+config = Config(RepositoryEnv(ENVPATH))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'products',
         'HOST': 'localhost',
-        'USER': user_name,
-        'PASSWORD': pass_name,
+        # 'USER': user_name,
+        # 'PASSWORD': pass_name,
+        'USER': config('P_USER',default=''),
+        'PASSWORD': config('P_PASSWORD',default=''),
+
     }
 }
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('S_SECRET_KEY',default=''),
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
