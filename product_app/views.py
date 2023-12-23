@@ -1,25 +1,25 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-
 from product_app.forms import ProductForm, VersionForm
 from product_app.models import Product, Version
 from django.views import View
 
 
-class IndexListView(ListView):
+class IndexListView(LoginRequiredMixin, ListView):
     model = Product
     model1 = Version
     template_name = 'product_app/index_list.html'
 
 
-class CatalogListView(ListView):
+class CatalogListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'product_app/catalog_list.html'
 
 
-class AboutView(View):
+class AboutView(LoginRequiredMixin, View):
     template_name = 'product_app/about.html'
 
     def post(self, request, *args, **kwargs):
@@ -36,7 +36,7 @@ class AboutView(View):
         return render(request, self.template_name)
 
 
-class Product_appCreateView(CreateView):
+class Product_appCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'product_app/product_form.html'
@@ -53,7 +53,7 @@ class Product_appCreateView(CreateView):
         return context_data
 
 
-class Product_appUpdateView(UpdateView):
+class Product_appUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'product_app/product_form.html'
@@ -78,3 +78,5 @@ class Product_appUpdateView(UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
