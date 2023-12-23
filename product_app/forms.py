@@ -15,8 +15,7 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
-        # field = ('name', 'description', )
-        # exclude = ('modified_date',)
+
 
     def get_active_version(self):
         return self.instance.version_set.filter(version_flag=True).first()
