@@ -12,8 +12,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from config import settings
+from django.contrib.auth.forms import PasswordResetForm
+from django.views.generic.edit import FormView
+from django.contrib.messages.views import SuccessMessageMixin
 
 MyUser = get_user_model()
+UserModel = get_user_model()
 
 
 class MyLoginView(LoginView):
@@ -61,35 +65,6 @@ class ProfileView(UpdateView):
         return self.request.user
 
 
-# class EmailVerify(View):
-#
-#     def get(self, request, uidb64, token):
-#         user = self.get_user(uidb64)
-#         if user is not None and token_generator.check_token(user, token):
-#             user.is_active = True
-#             user.save()
-#             login(request, user)
-#             return redirect('login/')
-#
-#         return redirect('invalid_verify')
-#
-#     @staticmethod
-#     def get_user(uidb64):
-#         try:
-#             # urlsafe_base64_decode() decodes to bytes
-#             uid = urlsafe_base64_decode(uidb64).decode()
-#             user = MyUser.objects.get(pk=uid)
-#         except (
-#                 TypeError,
-#                 ValueError,
-#                 OverflowError,
-#                 MyUser.DoesNotExist,
-#                 ValidationError
-#         ):
-#             user = None
-#         return user
-
-
 class UserConfirmEmailView(View):
     def get(self, request, uidb64, token):
         try:
@@ -132,3 +107,59 @@ class EmailConfirmationFailedView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Ваш электронный адрес не активирован'
         return context
+
+    # class CustomPasswordResetView(FormView):
+    #     template_name = 'users/password_reset_form.html'
+    #     form_class = PasswordResetForm
+    #     success_url = '/users/'
+
+
+class CustomPasswordResetView(FormView):
+    template_name = 'users/password_reset_form.html'
+    form_class = PasswordResetForm
+    success_url = '/users/'
+
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+
+        # Вместо UserModel.objects.get используйте get_user_model().objects.get
+        try:
+            user = UserModel.objects.get(email__iexact=email, is_active=True)
+        except UserModel.DoesNotExist:
+            # Обработка случая, когда пользователь не найден
+            return self.form_invalid(form)
+
+        # Генерация нового пароля
+        new_password = UserModel.objects.make_random_password()
+        user.set_password(new_password)
+        user.save()
+
+        # Отправка нового пароля на почту
+        subject = 'Ваш новый пароль'
+        message = f'Ваш новый пароль: {new_password}'
+        send_mail(subject, message, from_email=settings.EMAIL_HOST_USER, recipient_list=[user.email])
+
+        return super().form_valid(form)
+
+# class CustomPasswordResetDoneView(FormView):
+#     template_name = 'users/password_reset_done.html'
+#     form_class = PasswordResetForm
+#     success_url = reverse_lazy('login')
+#
+#     def form_valid(self, form):
+#         user = form.save()
+#         # Генерация нового пароля
+#         new_password = User.objects.make_random_password()
+#         user.set_password(new_password)
+#         user.save()
+#
+#         # Отправка нового пароля на электронную почту
+#         send_mail(
+#             'Your subject here',
+#             f'Your new password is: {new_password}',
+#             from_email=settings.EMAIL_HOST_USER,
+#             recipient_list=[user.email],
+#             fail_silently=False,
+#         )
+#
+#         return super().form_valid(form)
