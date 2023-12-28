@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from product_app.forms import ProductForm, VersionForm
-from product_app.models import Product, Version
+from product_app.models import Product, Version, Category
 from django.views import View
 
 
@@ -13,10 +13,22 @@ class IndexListView(LoginRequiredMixin, ListView):
     model1 = Version
     template_name = 'product_app/index_list.html'
 
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            category_id=self.kwargs.get('pk'),
+            owner=self.request.user
+        )
+
 
 class CatalogListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'product_app/catalog_list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            category_id=self.kwargs.get('pk'),
+            owner=self.request.user
+        )
 
 
 class AboutView(LoginRequiredMixin, View):
@@ -52,6 +64,10 @@ class Product_appCreateView(LoginRequiredMixin, CreateView):
 
         return context_data
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class Product_appUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
@@ -78,5 +94,3 @@ class Product_appUpdateView(LoginRequiredMixin, UpdateView):
             formset.save()
 
         return super().form_valid(form)
-
-

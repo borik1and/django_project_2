@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.datetime_safe import date
 
+
 NULLABLE = {'blank': True, 'null': True}
+
 
 class Category(models.Model):
     name = models.CharField(max_length=250, verbose_name='Наименование')
@@ -23,6 +25,7 @@ class Product(models.Model):
     price_one = models.IntegerField(verbose_name='цена за штуку')
     date_add = models.DateField(default=date.today, verbose_name='дата создания')
     modified_date = models.DateField(default=date.today, verbose_name='дата последнего изменения')
+    owner = models.CharField(max_length=100, default=None, verbose_name='Владелец')
 
     def __str__(self):
         return f'{self.name}({self.category})'
