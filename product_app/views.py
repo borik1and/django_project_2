@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import render
@@ -7,6 +9,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from product_app.forms import ProductForm, VersionForm
 from product_app.models import Product, Version, Category
 from django.views import View
+
+from product_app.services import get_categories_cache
 
 
 class IndexListView(LoginRequiredMixin, ListView):
@@ -105,3 +109,12 @@ class Product_appUpdateView(LoginRequiredMixin, UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
+@login_required
+def categories(request):
+    context = {
+        'object_list': get_categories_cache(),
+        'title': 'Все категории'
+    }
+    return render(request, 'product_app/categories.html', context)
