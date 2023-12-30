@@ -3,7 +3,7 @@ from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from product_app.forms import ProductForm, VersionForm
 from product_app.models import Product, Version, Category
 from django.views import View
@@ -14,6 +14,15 @@ class IndexListView(LoginRequiredMixin, ListView):
     template_name = 'product_app/index_list.html'
     context_object_name = 'product_list'
 
+    def get_queryset(self):
+        # Фильтруем продукты по владельцу (owner) текущего пользователя
+        return super().get_queryset().filter(
+            owner=self.request.user
+        )
+
+
+class ProductDetailView(DetailView):
+    model = Product
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -21,29 +30,16 @@ class IndexListView(LoginRequiredMixin, ListView):
             raise Http404
         return self.object
 
-    def get_queryset(self):
-        # Фильтруем продукты по владельцу (owner) текущего пользователя
-        return super().get_queryset().filter(
-            owner=self.request.user
-        )
-
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super().get_context_data(*args, **kwargs)
-    #     category_item = Category.objects.get(pk=self.kwargs.get('pk'))
-    #     context_data['category_pk, '] = category_item.pk
-    #     context_data['title'] = f'Категории продуктов {category_item.name}'
-    #     return context_data
-
 
 class CatalogListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'product_app/catalog_list.html'
 
-    # def get_queryset(self):
-    #     return super().get_queryset().filter(
-    #         category_id=self.kwargs.get('pk'),
-    #         owner=self.request.user
-    #     )
+    def get_queryset(self):
+        # Фильтруем продукты по владельцу (owner) текущего пользователя
+        return super().get_queryset().filter(
+            owner=self.request.user
+        )
 
 
 class AboutView(LoginRequiredMixin, View):
