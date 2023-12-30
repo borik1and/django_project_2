@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from product_app.views import CatalogListView, IndexListView, AboutView, Product_appCreateView, Product_appUpdateView, \
     ProductDetailView, categories
 from django.views.decorators.cache import cache_page
