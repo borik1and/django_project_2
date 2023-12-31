@@ -27,12 +27,6 @@ class IndexListView(LoginRequiredMixin, ListView):
 class ProductDetailView(DetailView):
     model = Product
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user:
-            raise Http404
-        return self.object
-
 
 class CatalogListView(LoginRequiredMixin, ListView):
     model = Product
@@ -88,6 +82,12 @@ class Product_appUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'product_app/product_form.html'
     success_url = reverse_lazy('product_app:index')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404
+        return self.object
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

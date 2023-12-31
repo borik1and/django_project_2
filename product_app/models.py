@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.datetime_safe import date
 from users.models import User
 
-
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -27,11 +26,26 @@ class Product(models.Model):
     date_add = models.DateField(default=date.today, verbose_name='дата создания')
     modified_date = models.DateField(default=date.today, verbose_name='дата последнего изменения')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Владелец')
+    is_published = models.BooleanField(default=False, verbose_name='признак публикации')
 
     def __str__(self):
         return f'{self.name}({self.category})'
 
     class Meta:
+        permissions = [
+            (
+                "set_published_status",
+                "Can publish product",
+            ),
+            (
+                "set_category",
+                "change category of product"
+            ),
+            (
+                "set_description",
+                "change description"
+            )
+        ]
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
 
