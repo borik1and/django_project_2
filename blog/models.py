@@ -17,6 +17,7 @@ class Blog(models.Model):
         return f'{self.title}{self.body}{self.creation_date}{self.publication}'
 
     class Meta:
+
         verbose_name = 'Блог'
         verbose_name_plural = 'Блоги'
 
